@@ -6,15 +6,14 @@ import {MovieDetail} from "./components/MovieDetail";
 
 function App() {
 
-  const apiKey = 'YOUR_API_KEY';
+  const apiKey = 'API_KEY';
   const movieUrl = 'https://www.omdbapi.com/';
 
   const [movies, setMovies] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState('');
-  const [movieDetail, setMovieDetail] = useState([]);
-  const [modalStyle, setModalStyle] = useState('none');
-  const [modalClass, setModalClass] = useState('');
+  const [movieDetail, setMovieDetail] = useState(null);
+  const [modalShow, setModalShow] = useState(false);
 
   async function getMovies(searchText) {
     const response = await fetch(movieUrl + '?apikey=' + apiKey + '&s=' + searchText).then(res => res.json());
@@ -40,11 +39,8 @@ function App() {
 
   async function getMovie(id) {
     const data = await getMovieById(id);
-    console.log(data)
-    setMovieDetail([...data]);
-    setModalStyle('block');
-    setModalClass('show');
-
+    setMovieDetail(data);
+    setModalShow(true);
   }
 
   async function openModal(id) {
@@ -52,8 +48,7 @@ function App() {
   }
 
   function closeModal() {
-    setModalStyle('none');
-    setModalClass('');
+    setModalShow(false);
   }
 
 
@@ -71,8 +66,7 @@ function App() {
           !error ? <MovieList movies={movies} movieHandler={openModal} /> : <h2>{error}</h2>
         }
       </main>
-
-      <MovieDetail movie={movieDetail} display={modalStyle} show={modalClass} closeModal={closeModal}/>
+      <MovieDetail movie={movieDetail} show={modalShow} closeModal={closeModal}/>
     </div>
   );
 }
